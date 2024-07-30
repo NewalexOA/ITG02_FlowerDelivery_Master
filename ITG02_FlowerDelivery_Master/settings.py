@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'ITG02_FlowerDelivery_Master.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'flowerdelivery',
+        'USER': 'flower_user',
+        'PASSWORD': 'f567ffe5',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
