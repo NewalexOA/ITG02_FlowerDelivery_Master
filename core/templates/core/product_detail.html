@@ -1,0 +1,33 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>{{ product.name }}</h2>
+  <img src="{{ product.image.url }}" alt="{{ product.name }}">
+  <p>{{ product.description }}</p>
+  <p>Цена: {{ product.price }}</p>
+  <form method="post" action="{% url 'add_to_cart' product.pk %}">
+    {% csrf_token %}
+    <button type="submit">Добавить в корзину</button>
+  </form>
+  <h3>Отзывы</h3>
+  {% if reviews %}
+    <ul>
+      {% for review in reviews %}
+        <li>
+          {{ review.user.username }}: {{ review.rating }} звезд
+          <p>{{ review.review }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Нет отзывов</p>
+  {% endif %}
+  {% if can_review %}
+    <h3>Оставить отзыв</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Отправить</button>
+    </form>
+  {% endif %}
+{% endblock %}

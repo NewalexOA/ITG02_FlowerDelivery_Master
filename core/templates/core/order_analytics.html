@@ -1,0 +1,46 @@
+<!-- core/templates/core/order_analytics.html -->
+{% extends 'core/base.html' %}
+
+{% block title %}Order Analytics{% endblock %}
+
+{% block content %}
+<h1>Order Analytics</h1>
+<p>Total Sales: ${{ total_sales }}</p>
+<p>Total Orders: {{ total_orders }}</p>
+
+<h2>Sales by Month</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Month</th>
+            <th>Total Sales</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sale in sales_by_month %}
+        <tr>
+            <td>{{ sale.created_at__month }}</td>
+            <td>${{ sale.total }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Sales by Product</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Total Sales</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in sales_by_product %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>${{ product.total_sales }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

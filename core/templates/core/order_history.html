@@ -1,0 +1,38 @@
+<!-- core/templates/core/order_history.html -->
+{% extends 'core/base.html' %}
+
+{% block title %}Order History{% endblock %}
+
+{% block content %}
+<h1>Order History</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Products</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>
+                <ul>
+                    {% for product in order.products.all %}
+                    <li>{{ product.name }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>{{ order.address }}</td>
+            <td>{{ order.phone }}</td>
+            <td>{{ order.status }}</td>
+            <td>{{ order.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
