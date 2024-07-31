@@ -4,7 +4,7 @@ from django.views import generic
 from .forms import CustomUserCreationForm, ReviewForm, OrderForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, Order, Review, Cart, CartItem, OrderItem
-from django.db.models import Sum
+from django.db.models import Sum, F
 
 
 def product_list(request):
@@ -87,11 +87,11 @@ def order_history(request):
 
 @login_required
 def order_analytics(request):
-    total_sales = Order.objects.aggregate(total=Sum('order_items__product__price'))['total'] or 0
+    total_sales = OrderItem.objects.aggregate(total=Sum(F('quantity') * F('product__price')))['total'] or 0
     total_orders = Order.objects.count()
-    sales_by_month = Order.objects.values('created_at__month').annotate(
-        total=Sum('order_items__product__price')).order_by('created_at__month')
-    sales_by_product = Product.objects.annotate(total_sales=Sum('order_items__product__price')).order_by('-total_sales')
+    sales_by_month = OrderItem.objects.values('order__created_at__month').annotate(total=Sum(F('quantity') * F('product__price'))).order_by('order__created_at__month')
+    sales_by_product = Product.objects.annotate(total_sales=Sum('orderitem__quantity')).order_by('-total_sales')
+
     context = {
         'total_sales': total_sales,
         'total_orders': total_orders,
