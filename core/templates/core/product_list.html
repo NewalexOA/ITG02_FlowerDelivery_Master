@@ -1,4 +1,3 @@
-<!-- core/templates/core/product_list.html -->
 {% extends 'core/base.html' %}
 
 {% block title %}Product Catalog{% endblock %}
@@ -15,7 +14,10 @@
                     <p class="card-text">{{ product.description }}</p>
                     <p class="card-text"><strong>${{ product.price }}</strong></p>
                     <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary">View Details</a>
-                    <a href="{% url 'add_to_cart' product.pk %}" class="btn btn-success">Add to Cart</a>
+                    <form method="post" action="{% url 'add_to_cart' product.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Add to Cart</button>
+                    </form>
                 </div>
             </div>
         </div>

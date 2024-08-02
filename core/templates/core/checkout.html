@@ -1,3 +1,4 @@
+<!-- core/templates/core/checkout.html -->
 {% extends 'core/base.html' %}
 
 {% block title %}Оформление заказа{% endblock %}
@@ -14,6 +15,6 @@
         <label for="phone">Телефон:</label>
         <input type="text" class="form-control" id="phone" name="phone" required>
     </div>
-    <button type="submit" class="btn btn-success">Оформить заказ</button>
+    {% include 'core/components/button.html' with action_url=request.path btn_class='btn-success' btn_label='Оформить заказ' %}
 </form>
 {% endblock %}

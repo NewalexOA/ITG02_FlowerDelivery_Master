@@ -1,0 +1,5 @@
+<!-- core/templates/core/components/button.html -->
+<form method="post" action="{{ action_url }}">
+    {% csrf_token %}
+    <button type="submit" class="btn {{ btn_class }}">{{ btn_label }}</button>
+</form>

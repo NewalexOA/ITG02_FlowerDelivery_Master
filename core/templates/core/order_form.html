@@ -19,6 +19,6 @@
         {{ form.phone.label_tag }}<br>
         {{ form.phone }}
     </div>
-    <button type="submit" class="btn btn-primary">Submit Order</button>
+    {% include 'core/components/button.html' with action_url=request.path btn_class='btn-primary' btn_label='Submit Order' %}
 </form>
 {% endblock %}

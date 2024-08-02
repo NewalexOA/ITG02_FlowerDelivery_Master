@@ -6,11 +6,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, Order, Review, Cart, CartItem, OrderItem
 from django.db.models import Sum, F
 
-
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'core/product_list.html', {'products': products})
-
 
 @login_required
 def product_detail(request, pk):
@@ -32,9 +30,7 @@ def product_detail(request, pk):
             return redirect('product_detail', pk=product.pk)
     else:
         form = ReviewForm()
-    return render(request, 'core/product_detail.html',
-                  {'product': product, 'reviews': reviews, 'form': form, 'can_review': can_review})
-
+    return render(request, 'core/product_detail.html', {'product': product, 'reviews': reviews, 'form': form, 'can_review': can_review})
 
 @login_required
 def add_to_cart(request, pk):
@@ -44,28 +40,34 @@ def add_to_cart(request, pk):
     if not created:
         cart_item.quantity += 1
         cart_item.save()
+    else:
+        print("New cart item created:", cart_item)
+    print("Cart:", cart)
+    print("Cart items:", cart.items.all())
     return redirect('cart_detail')
 
 
 @login_required
 def remove_from_cart(request, pk):
     cart = get_object_or_404(Cart, user=request.user)
-    cart_item = get_object_or_404(CartItem, cart=cart, pk=pk)
+    cart_item = get_object_or_404(CartItem, cart=cart, product__pk=pk)
     cart_item.delete()
     return redirect('cart_detail')
 
-
 @login_required
 def cart_detail(request):
-    cart = get_object_or_404(Cart, user=request.user)
+    cart, created = Cart.objects.get_or_create(user=request.user)
     return render(request, 'core/cart_detail.html', {'cart': cart})
-
 
 @login_required
 def checkout(request):
     cart = get_object_or_404(Cart, user=request.user)
     if request.method == 'POST':
-        order = Order.objects.create(user=request.user, address=request.POST['address'], phone=request.POST['phone'])
+        order = Order.objects.create(
+            user=request.user,
+            address=request.POST['address'],
+            phone=request.POST['phone']
+        )
         for item in cart.items.all():
             OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
         cart.items.all().delete()
@@ -78,12 +80,10 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'core/signup.html'
 
-
 @login_required
 def order_history(request):
     orders = Order.objects.filter(user=request.user)
     return render(request, 'core/order_history.html', {'orders': orders})
-
 
 @login_required
 def order_analytics(request):
