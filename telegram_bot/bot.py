@@ -1,23 +1,24 @@
-import logging
+import asyncio
 from aiogram import Bot, Dispatcher
+from aiogram.types import Message
+from aiogram.filters import Command
 from config import BOT_TOKEN
-from handlers.start import register_handlers
 
-# Установить уровень логирования
-logging.basicConfig(level=logging.INFO)
-
-# Создание объектов бота и диспетчера
+# Инициализация бота
 bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher(bot)
 
-# Регистрация обработчиков
-register_handlers(dp)
+# Инициализация диспетчера
+dp = Dispatcher()
 
-# Асинхронная функция для запуска бота
+# Обработчик команды /start
+@dp.message(Command(commands=["start"]))
+async def send_welcome(message: Message):
+    await message.reply("Welcome to the bot!")
+
+# Функция для запуска бота
 async def main():
-    await dp.start_polling()
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
 
-# Запуск бота
-if __name__ == "__main__":
-    import asyncio
+if __name__ == '__main__':
     asyncio.run(main())
