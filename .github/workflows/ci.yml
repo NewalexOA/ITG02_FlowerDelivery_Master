@@ -40,8 +40,12 @@ jobs:
           echo "${SSH_PRIVATE_KEY}" > private_key
           chmod 600 private_key
 
-          # Upload .env file
-          scp -i private_key -o StrictHostKeyChecking=no .env newalexadmin@176.123.164.14:/home/newalexadmin/ITG02_FlowerDelivery_Master/.env
+          # Upload .env file if it exists
+          if [ -f .env ]; then
+            scp -i private_key -o StrictHostKeyChecking=no .env newalexadmin@176.123.164.14:/home/newalexadmin/ITG02_FlowerDelivery_Master/.env
+          else
+            echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}" | ssh -i private_key -o StrictHostKeyChecking=no newalexadmin@176.123.164.14 'cat > /home/newalexadmin/ITG02_FlowerDelivery_Master/.env'
+          fi
 
           # Upload NGINX configuration
           scp -i private_key -o StrictHostKeyChecking=no nginx.conf newalexadmin@176.123.164.14:/home/newalexadmin/nginx.conf
