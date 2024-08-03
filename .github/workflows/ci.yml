@@ -1,4 +1,4 @@
-name: Test CI/CD pipeline
+name: Deploy Bot
 
 on:
   push:
@@ -13,36 +13,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
 
-    - name: Run tests
-      run: |
-        source venv/bin/activate
-        python manage.py test
+      - name: Run tests
+        run: |
+          source venv/bin/activate
+          python manage.py test
 
-    - name: Deploy to server
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      run: |
-        echo "${SSH_PRIVATE_KEY}" > private_key
-        chmod 600 private_key
-        ssh -i private_key -o StrictHostKeyChecking=no newalexadmin@176.123.164.14 '
-          cd /home/newalexadmin/ITG02_FlowerDelivery_Master &&
-          git stash &&
-          git pull &&
-          sudo systemctl restart gunicorn &&
-          sudo systemctl restart nginx &&
-          git stash pop'
-        rm private_key
+      - name: Deploy to server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: |
+          echo "${SSH_PRIVATE_KEY}" > private_key
+          chmod 600 private_key
+
+          # Upload .env file
+          scp -i private_key -o StrictHostKeyChecking=no .env newalexadmin@176.123.164.14:/home/newalexadmin/your_project_directory/.env
+
+          # Upload NGINX configuration
+          scp -i private_key -o StrictHostKeyChecking=no path/to/your/nginx.conf newalexadmin@176.123.164.14:/home/newalexadmin/nginx.conf
+          
+          # Move NGINX configuration and restart services
+          ssh -i private_key -o StrictHostKeyChecking=no newalexadmin@176.123.164.14 '
+            sudo mv /home/newalexadmin/nginx.conf /etc/nginx/sites-available/flowerdelivery
+            sudo ln -sf /etc/nginx/sites-available/flowerdelivery /etc/nginx/sites-enabled/
+            sudo systemctl restart nginx
+            cd /home/newalexadmin/your_project_directory
+            git pull
+            sudo systemctl restart gunicorn
+          '
+          rm private_key

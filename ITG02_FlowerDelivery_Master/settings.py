@@ -135,3 +135,5 @@ LOGOUT_REDIRECT_URL = '/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+BOT_TOKEN = '7203903071:AAG8WPIvqOzWWBw9LYaYOb74g4qPCwqpfYM'
