@@ -41,17 +41,17 @@ jobs:
           chmod 600 private_key
 
           # Upload .env file
-          scp -i private_key -o StrictHostKeyChecking=no .env newalexadmin@176.123.164.14:/home/newalexadmin/your_project_directory/.env
+          scp -i private_key -o StrictHostKeyChecking=no .env newalexadmin@176.123.164.14:/home/newalexadmin/ITG02_FlowerDelivery_Master/.env
 
           # Upload NGINX configuration
-          scp -i private_key -o StrictHostKeyChecking=no path/to/your/nginx.conf newalexadmin@176.123.164.14:/home/newalexadmin/nginx.conf
+          scp -i private_key -o StrictHostKeyChecking=no /Users/anaskin/Documents/GitHub/ITG02_FlowerDelivery_Master/nginx.conf newalexadmin@176.123.164.14:/home/newalexadmin/nginx.conf
           
           # Move NGINX configuration and restart services
           ssh -i private_key -o StrictHostKeyChecking=no newalexadmin@176.123.164.14 '
             sudo mv /home/newalexadmin/nginx.conf /etc/nginx/sites-available/flowerdelivery
             sudo ln -sf /etc/nginx/sites-available/flowerdelivery /etc/nginx/sites-enabled/
             sudo systemctl restart nginx
-            cd /home/newalexadmin/your_project_directory
+            cd /home/newalexadmin/ITG02_FlowerDelivery_Master
             git pull
             sudo systemctl restart gunicorn
           '
