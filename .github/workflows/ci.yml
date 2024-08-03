@@ -44,7 +44,7 @@ jobs:
           scp -i private_key -o StrictHostKeyChecking=no .env newalexadmin@176.123.164.14:/home/newalexadmin/ITG02_FlowerDelivery_Master/.env
 
           # Upload NGINX configuration
-          scp -i private_key -o StrictHostKeyChecking=no /Users/anaskin/Documents/GitHub/ITG02_FlowerDelivery_Master/nginx.conf newalexadmin@176.123.164.14:/home/newalexadmin/nginx.conf
+          scp -i private_key -o StrictHostKeyChecking=no nginx.conf newalexadmin@176.123.164.14:/home/newalexadmin/nginx.conf
           
           # Move NGINX configuration and restart services
           ssh -i private_key -o StrictHostKeyChecking=no newalexadmin@176.123.164.14 '
